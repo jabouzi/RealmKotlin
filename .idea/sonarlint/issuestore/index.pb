@@ -17,3 +17,5 @@ p
 @app/src/main/java/com/skanderjabouzi/realmkotlin/model/Person.kt,0/f/0f71f95a2aae711e406da4906cefd8c0fa3fe7e6
 q
 Aapp/src/main/java/com/skanderjabouzi/realmkotlin/model/Address.kt,1/8/1896c3d5b3008018e69acbdf606806cf308ae610
+u
+Eapp/src/main/java/com/skanderjabouzi/realmkotlin/model/AyaBookmark.kt,f/5/f526033c58df13cd24720ac98f02d543fb71dfd5

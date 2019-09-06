@@ -57,19 +57,19 @@ class Migration : RealmMigration {
          */
         // Migrate from version 0 to version 1
         if (oldVersion == 0L) {
-            val personSchema = schema.get("Person")
-
-            // Combine 'firstName' and 'lastName' in a new field called 'fullName'
-            personSchema!!
-                .addField("fullName", String::class.java, FieldAttribute.REQUIRED)
-                .transform { obj ->
-                    obj.set(
-                        "fullName",
-                        obj.getString("firstName") + " " + obj.getString("lastName")
-                    )
-                }
-                .removeField("firstName")
-                .removeField("lastName")
+//            val personSchema = schema.get("Person")
+//
+//            // Combine 'firstName' and 'lastName' in a new field called 'fullName'
+//            personSchema!!
+//                .addField("fullName", String::class.java, FieldAttribute.REQUIRED)
+//                .transform { obj ->
+//                    obj.set(
+//                        "fullName",
+//                        obj.getString("firstName") + " " + obj.getString("lastName")
+//                    )
+//                }
+//                .removeField("firstName")
+//                .removeField("lastName")
             oldVersion++
         }
 
@@ -88,86 +88,90 @@ class Migration : RealmMigration {
          * RealmList<Pet> pets;    // add an array property
         </Pet> */
         // Migrate from version 1 to version 2
+//        if (oldVersion == 1L) {
+//
+//            // Create a new class
+//            val petSchema = schema.create("Pet")
+//                .addField("name", String::class.java, FieldAttribute.REQUIRED)
+//                .addField("type", String::class.java, FieldAttribute.REQUIRED)
+//
+//            // Add a new field to an old class and populate it with initial data
+//            schema.get("Person")!!
+//                .addRealmListField("pets", petSchema)
+//                .transform { obj ->
+//                    if (obj.getString("fullName") == "JP McDonald") {
+//                        val pet = realm.createObject("Pet")
+//                        pet.setString("name", "Jimbo")
+//                        pet.setString("type", "dog")
+//                        obj.getList("pets").add(pet)
+//                    }
+//                }
+//            oldVersion++
+//        }
+//
+//        /************************************************
+//         * // Version 3
+//         * class Pet
+//         * @Required
+//         * String name;
+//         * int type;               // type becomes int
+//         *
+//         * class Person
+//         * String fullName;        // fullName is nullable now
+//         * RealmList<Pet> pets;    // age and pets re-ordered (no action needed)
+//         * int age;
+//        </Pet> */
+//        // Migrate from version 2 to version 3
+//        if (oldVersion == 2L) {
+//            val personSchema = schema.get("Person")
+//            personSchema!!.setNullable("fullName", true) // fullName is nullable now.
+//
+//            // Change type from String to int
+//            schema.get("Pet")!!
+//                .addField("type_tmp", Int::class.javaPrimitiveType)
+//                .transform { obj ->
+//                    val oldType = obj.getString("type")
+//                    if (oldType == "dog") {
+//                        obj.setLong("type_tmp", 1)
+//                    } else if (oldType == "cat") {
+//                        obj.setInt("type_tmp", 2)
+//                    } else if (oldType == "hamster") {
+//                        obj.setInt("type_tmp", 3)
+//                    }
+//                }
+//                .removeField("type")
+//                .renameField("type_tmp", "type")
+//            oldVersion++
+//        }
+//
+//
+//        if (oldVersion == 3L) {
+//
+//            // Create a new class
+//            val addressSchema = schema.create("Address")
+//                .addField("name", String::class.java, FieldAttribute.PRIMARY_KEY)
+//                .addField("number", Int::class.javaPrimitiveType)
+//
+//            // Add a new field to an old class and populate it with initial data
+//            oldVersion++
+//        }
+
         if (oldVersion == 1L) {
 
             // Create a new class
-            val petSchema = schema.create("Pet")
-                .addField("name", String::class.java, FieldAttribute.REQUIRED)
-                .addField("type", String::class.java, FieldAttribute.REQUIRED)
-
-            // Add a new field to an old class and populate it with initial data
-            schema.get("Person")!!
-                .addRealmListField("pets", petSchema)
-                .transform { obj ->
-                    if (obj.getString("fullName") == "JP McDonald") {
-                        val pet = realm.createObject("Pet")
-                        pet.setString("name", "Jimbo")
-                        pet.setString("type", "dog")
-                        obj.getList("pets").add(pet)
-                    }
-                }
-            oldVersion++
-        }
-
-        /************************************************
-         * // Version 3
-         * class Pet
-         * @Required
-         * String name;
-         * int type;               // type becomes int
-         *
-         * class Person
-         * String fullName;        // fullName is nullable now
-         * RealmList<Pet> pets;    // age and pets re-ordered (no action needed)
-         * int age;
-        </Pet> */
-        // Migrate from version 2 to version 3
-        if (oldVersion == 2L) {
             val personSchema = schema.get("Person")
-            personSchema!!.setNullable("fullName", true) // fullName is nullable now.
-
-            // Change type from String to int
-            schema.get("Pet")!!
-                .addField("type_tmp", Int::class.javaPrimitiveType)
-                .transform { obj ->
-                    val oldType = obj.getString("type")
-                    if (oldType == "dog") {
-                        obj.setLong("type_tmp", 1)
-                    } else if (oldType == "cat") {
-                        obj.setInt("type_tmp", 2)
-                    } else if (oldType == "hamster") {
-                        obj.setInt("type_tmp", 3)
-                    }
-                }
-                .removeField("type")
-                .renameField("type_tmp", "type")
-            oldVersion++
-        }
-
-
-        if (oldVersion == 3L) {
-
-            // Create a new class
-            val addressSchema = schema.create("Address")
-                .addField("name", String::class.java, FieldAttribute.PRIMARY_KEY)
-                .addField("number", Int::class.javaPrimitiveType)
-
-            // Add a new field to an old class and populate it with initial data
-            oldVersion++
-        }
-
-        if (oldVersion == 4L) {
-
-            // Create a new class
-            val personSchema = schema.get("Person")
-            val addressSchema = schema.get("Address")
-
-            // Combine 'firstName' and 'lastName' in a new field called 'fullName'
-            personSchema!!
-                .addRealmObjectField("address", addressSchema)
+            personSchema!!.addRealmObjectField("address", schema.get("Address"))
             personSchema!!.setNullable("address", true)
 
             // Add a new field to an old class and populate it with initial data
+            oldVersion++
+        }
+
+        if (oldVersion == 2L) {
+            val ayaBookmark = schema.create("AyaBookmark")
+            ayaBookmark.addField("id", String::class.java, FieldAttribute.PRIMARY_KEY)
+            ayaBookmark.addField("sura", Int::class.javaPrimitiveType)
+            ayaBookmark.addField("aya", Int::class.javaPrimitiveType)
             oldVersion++
         }
     }

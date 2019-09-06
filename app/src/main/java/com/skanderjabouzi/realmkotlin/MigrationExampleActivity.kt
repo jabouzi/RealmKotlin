@@ -42,6 +42,7 @@ class MigrationExampleActivity : Activity() {
 
     private var rootLayout: LinearLayout? = null
     private var realm: Realm? = null
+    private var realmVersion = 3
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,79 +52,79 @@ class MigrationExampleActivity : Activity() {
         rootLayout!!.removeAllViews()
 
         // 3 versions of the databases for testing. Normally you would only have one.
-        copyBundledRealmFile(this.resources.openRawResource(R.raw.default0), "default0.realm")
-        copyBundledRealmFile(this.resources.openRawResource(R.raw.default1), "default1.realm")
-        copyBundledRealmFile(this.resources.openRawResource(R.raw.default2), "default2.realm")
+//        copyBundledRealmFile(this.resources.openRawResource(R.raw.default0), "default0.realm")
+//        copyBundledRealmFile(this.resources.openRawResource(R.raw.default1), "default1.realm")
+//        copyBundledRealmFile(this.resources.openRawResource(R.raw.default2), "default2.realm")
 
         // When you create a RealmConfiguration you can specify the version of the schema.
         // If the schema does not have that version a RealmMigrationNeededException will be thrown.
-        val config0 = RealmConfiguration.Builder()
-            .name("default0.realm")
-            .schemaVersion(5)
-            .build()
-
-        // You can then manually call Realm.migrateRealm().
-        try {
-            Realm.migrateRealm(config0, Migration())
-        } catch (ignored: FileNotFoundException) {
-            // If the Realm file doesn't exist, just ignore.
-        }
-
-        realm = Realm.getInstance(config0)
-        showStatus("Default0")
-        showStatus(realm)
-        realm!!.close()
+//        val config0 = RealmConfiguration.Builder()
+//            .name("default0.realm")
+//            .schemaVersion(realmVersion.toLong())
+//            .build()
+//
+//        // You can then manually call Realm.migrateRealm().
+//        try {
+//            Realm.migrateRealm(config0, Migration())
+//        } catch (ignored: FileNotFoundException) {
+//            // If the Realm file doesn't exist, just ignore.
+//        }
+//
+//        realm = Realm.getInstance(config0)
+//        showStatus("Default0")
+//        showStatus(realm)
+//        realm!!.close()
 
         // Or you can add the migration code to the configuration. This will run the migration code without throwing
         // a RealmMigrationNeededException.
         val config1 = RealmConfiguration.Builder()
-            .name("default1.realm")
-            .schemaVersion(5)
+            .name("default.realm")
+            .schemaVersion(realmVersion.toLong())
             .migration(Migration())
             .build()
 
         realm = Realm.getInstance(config1) // Automatically run migration if needed
-        showStatus("Default1")
+        showStatus("Default")
         showStatus(realm)
         realm!!.close()
 
-        // or you can set .deleteRealmIfMigrationNeeded() if you don't want to bother with migrations.
-        // WARNING: This will delete all data in the Realm though.
-        val config2 = RealmConfiguration.Builder()
-            .name("default2.realm")
-            .schemaVersion(5)
-            .deleteRealmIfMigrationNeeded()
-            .build()
-
-        realm = Realm.getInstance(config2)
-        showStatus("default2")
-        showStatus(realm)
-        realm!!.close()
+//        // or you can set .deleteRealmIfMigrationNeeded() if you don't want to bother with migrations.
+//        // WARNING: This will delete all data in the Realm though.
+//        val config2 = RealmConfiguration.Builder()
+//            .name("default2.realm")
+//            .schemaVersion(realmVersion.toLong())
+//            .deleteRealmIfMigrationNeeded()
+//            .build()
+//
+//        realm = Realm.getInstance(config2)
+//        showStatus("default2")
+//        showStatus(realm)
+//        realm!!.close()
     }
 
-    private fun copyBundledRealmFile(inputStream: InputStream, outFileName: String): String? {
-        try {
-            val file = File(this.filesDir, outFileName)
-            val outputStream = FileOutputStream(file)
-            val buf = ByteArray(1024)
-            var bytesRead: Int
-            do {
-
-                bytesRead = inputStream.read(buf)
-
-                if (bytesRead <= 0)
-
-                    break
-
-            } while (true)
-            outputStream.close()
-            return file.absolutePath
-        } catch (e: IOException) {
-            e.printStackTrace()
-        }
-
-        return null
-    }
+//    private fun copyBundledRealmFile(inputStream: InputStream, outFileName: String): String? {
+//        try {
+//            val file = File(this.filesDir, outFileName)
+//            val outputStream = FileOutputStream(file)
+//            val buf = ByteArray(1024)
+//            var bytesRead: Int
+//            do {
+//
+//                bytesRead = inputStream.read(buf)
+//
+//                if (bytesRead <= 0)
+//
+//                    break
+//
+//            } while (true)
+//            outputStream.close()
+//            return file.absolutePath
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//        }
+//
+//        return null
+//    }
 
     private fun realmString(realm: Realm): String {
         val stringBuilder = StringBuilder()
@@ -146,7 +147,6 @@ class MigrationExampleActivity : Activity() {
     }
 
     companion object {
-
         val TAG = MigrationExampleActivity::class.java.name
     }
 }

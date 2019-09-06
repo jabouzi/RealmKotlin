@@ -5,7 +5,7 @@ import io.realm.annotations.PrimaryKey
 
 open class AyaBookmark: RealmObject() {
     @PrimaryKey
-    var id: String = ""
+    var id = ""
     var sura = 0
     var aya = 0
 
